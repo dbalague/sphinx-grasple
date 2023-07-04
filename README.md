@@ -1,45 +1,42 @@
-# sphinx-exercise
+# sphinx-grasple
 
 [![Documentation Status][rtd-badge]][rtd-link]
 [![Github-CI][github-ci]][github-link]
 [![Coverage Status][codecov-badge]][codecov-link]
 
-**An exercise extension for Sphinx**.
+**A Grasple exercise extension for Sphinx**.
 
 This package contains a [Sphinx](http://www.sphinx-doc.org/en/master/) extension
-for producing exercise and solution directives.
+for inserting Grasple exercises into a Jupyter book as an iframe.
 
 
 ## Get started
 
-To get started with `sphinx-exercise`, first install it through `pip`:
+To get started with `sphinx-grasple`, first install it through `pip`:
 
 ```
-pip install sphinx-exercise
+pip install sphinx-grasple
 ```
 
-then, add `sphinx_exercise` to your sphinx `extensions` in the `conf.py`
+then, add `sphinx_grasple` to your sphinx `extensions` in the `conf.py`
 
 ```python
 ...
-extensions = ["sphinx_exercise"]
+extensions = ["sphinx_grasple"]
 ...
 ```
 
 
 ## Documentation
 
-See the [Sphinx Exercise documentation](https://ebp-sphinx-exercise.readthedocs.io/en/latest/) for more information.
+Coming soon...
+%See the [Sphinx Exercise documentation](https://ebp-sphinx-exercise.readthedocs.io/en/latest/) for more information.
 
+## Important Note
+
+The tests provided are still the original ones from sphinx-exercise and have not (yet) been adapted.
 
 ## Contributing
 
-We welcome all contributions! See the [EBP Contributing Guide](https://executablebooks.org/en/latest/contributing.html) for general details, and below for guidance specific to sphinx-exercise.
-
-
-[rtd-badge]: https://readthedocs.org/projects/ebp-sphinx-exercise/badge/?version=latest
-[rtd-link]: https://ebp-sphinx-exercise.readthedocs.io/en/latest/?badge=latest
-[github-ci]: https://github.com/executablebooks/sphinx-exercise/workflows/continuous-integration/badge.svg?branch=master
-[github-link]: https://github.com/executablebooks/sphinx-exercise
-[codecov-badge]: https://codecov.io/gh/executablebooks/sphinx-exercise/branch/master/graph/badge.svg
-[codecov-link]: https://codecov.io/gh/executablebooks/sphinx-exercise
+[github-ci]: https://github.com/executablebooks/sphinx-grasple/workflows/continuous-integration/badge.svg?branch=master
+[github-link]: https://github.com/dbalague/sphinx-grasple
