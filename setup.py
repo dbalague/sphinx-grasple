@@ -6,14 +6,16 @@ VERSION = "v0.4.1"
 
 LONG_DESCRIPTION = """
 This package contains a [Sphinx](http://www.sphinx-doc.org/) extension
-for producing exercise and solution directives.
+for inserting Grasple Exercises as an admonition.
 
-This project is maintained and supported by the Executable Books Project.
+This project is a fork of the original sphinx_exercise (v0.4.1) by
+the Executable Book Project.
+This fork is maintained and supported by Dani Balagué Guardia
 """
 
-SHORT_DESCRIPTION = "A Sphinx extension for producing exercises and solutions."
+SHORT_DESCRIPTION = "A Sphinx extension for inserting Grasple exercises."
 
-BASE_URL = "https://github.com/executablebooks/sphinx-exercise"
+BASE_URL = "https://github.com/dbalague/sphinx-exercise"
 URL = f"{BASE_URL}/archive/{VERSION}.tar.gz"
 
 # Define all extras
@@ -30,6 +32,7 @@ extras = {
         "docutils>=0.15,<0.19",
         "texsoup",
         "matplotlib",
+        "pyqrcode"
     ],
     "rtd": [
         "sphinx>=4,<6",
@@ -41,11 +44,11 @@ extras = {
 extras["all"] = set(ii for jj in extras.values() for ii in jj)
 
 setup(
-    name="sphinx-exercise",
+    name="sphinx-grasple",
     version=VERSION,
     python_requires=">=3.8",
-    author="QuantEcon",
-    author_email="admin@quantecon.org",
+    author="Daniel Balagué Guardia",
+    author_email="d.balagueguardia@tudelft.nl",
     url=BASE_URL,
     download_url=URL,
     project_urls={

@@ -22,9 +22,8 @@ from sphinx.util.fileutil import copy_asset
 
 from .directive import (
     GraspleExerciseDirective,
-    GraspleExerciseStartDirective,
-    GraspleExerciseEndDirective
 )
+
 from .nodes import (
     grasple_exercise_node,
     grasple_exercise_enumerable_node,
@@ -40,10 +39,7 @@ from .nodes import (
     visit_exercise_latex_number_reference,
     depart_exercise_latex_number_reference,
 )
-from .transforms import (
-    CheckGatedDirectives,
-    MergeGatedExercises,
-)
+
 from .post_transforms import (
     ResolveTitlesInGraspleExercises,
     UpdateReferencesToGraspleEnumerated,
@@ -168,11 +164,6 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     )
 
     app.add_directive("grasple", GraspleExerciseDirective)
-    app.add_directive("grasple-exercise-start", GraspleExerciseStartDirective)
-    app.add_directive("grasple-exercise-end", GraspleExerciseEndDirective)
-
-    app.add_transform(CheckGatedDirectives)
-    app.add_transform(MergeGatedExercises)
 
     app.add_post_transform(UpdateReferencesToGraspleEnumerated)
     app.add_post_transform(ResolveTitlesInGraspleExercises)

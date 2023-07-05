@@ -1,5 +1,5 @@
 """
-sphinx_exercise.directive
+sphinx_grasple.directive
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A custom Sphinx Directive for Grasple Exercises
@@ -20,12 +20,14 @@ from docutils.parsers.rst import directives
 from .nodes import (
     grasple_exercise_node,
     grasple_exercise_enumerable_node,
-    grasple_exercise_end_node,
     grasple_exercise_title,
     grasple_exercise_subtitle
 )
 from docutils import nodes
 from sphinx.util import logging
+
+import pyqrcode
+from docutils.statemachine import StringList
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +40,7 @@ class SphinxGraspleExerciseBaseDirective(SphinxDirective):
             docpath = self.env.doc2path(self.env.docname)
             path = docpath[: docpath.rfind(".")]
             other_path = self.env.doc2path(
-                self.env.sphinx_exercise_registry[label]["docname"]
+                self.env.sphinx_grasple_exercise_registry[label]["docname"]
             )
             msg = f"duplicate label: {label}; other instance in {other_path}"
             logger.warning(msg, location=path, color="red")
@@ -92,17 +94,19 @@ class GraspleExerciseDirective(SphinxGraspleExerciseBaseDirective):
         "description" : directives.unchanged,
         "iframe_width": directives.unchanged,
         "iframe_height": directives.unchanged,
-        "dropdown" : directives.flag
+        "dropdown" : directives.flag,
+        "qr": directives.flag
     }
 
     def run(self) -> List[Node]:
 
         # Parse options
-        description = self.options.get('description')
+        description = self.options.get('description', None)
         url = self.options.get('url')
         iframe_width = self.options.get('iframe_width', '100%')
         iframe_height = self.options.get('iframe_height', '400px')
         dropdown = 'dropdown' in self.options
+        qr = 'qr' in self.options
 
         self.defaults = {"title_text": "Grasple Exercise"}
         self.serial_number = self.env.new_serialno()
@@ -121,9 +125,6 @@ class GraspleExerciseDirective(SphinxGraspleExerciseBaseDirective):
         else:
             node = grasple_exercise_enumerable_node()
 
-        if self.name == "grasple-exercise-start":
-            node.gated = True
-
         # Parse custom subtitle option
         if self.arguments != []:
             subtitle = grasple_exercise_subtitle()
@@ -135,12 +136,29 @@ class GraspleExerciseDirective(SphinxGraspleExerciseBaseDirective):
 
         # State Parsing
         section = nodes.section(ids=["admonition-content"])
+        side_by_side = nodes.container(classes=["side-by-side"])
 
-        # Add the description if provided
-        if description:
-            description_container = nodes.container(classes=['description'])
-            self.state.nested_parse(self.content, self.content_offset, description_container)
-            section += description_container.children
+        # Generate QR Code
+        qr_code = pyqrcode.QRCode(url)
+        img = qr_code.png_as_base64_str(2)
+        qr_code_container = nodes.container(classes=['qr-code-container'])
+        qr_code_html = f'<img src="data:image/png;base64,{img}" alt={url} />'
+        qr_code_node = nodes.raw('',qr_code_html,format='html')
+        qr_code_container += qr_code_node
+        side_by_side += qr_code_node
+        
+        # Add the description
+        if not description:
+            print("Error: You cannot insert a Grasple exercise without a description.")
+            raise Exception()
+
+        else:
+            description_container = nodes.container(classes=['description-container'])
+            description_paragraph = nodes.paragraph()
+            self.state.nested_parse(StringList([description]), self.content_offset, description_paragraph)
+            description_container += description_paragraph
+            side_by_side += description_container
+            section += side_by_side
 
         # Create the iframe HTML code
         iframe_html = f'<iframe src="{url}" width="{iframe_width}" height="{iframe_height}"></iframe>'
@@ -213,75 +231,3 @@ class GraspleExerciseDirective(SphinxGraspleExerciseBaseDirective):
             return []
 
         return [node]
-
-# Gated Directives
-
-class GraspleExerciseStartDirective(GraspleExerciseDirective):
-    """
-    A gated directive for exercises
-
-    .. exercise:: <subtitle> (optional)
-       :label:
-       :class:
-       :nonumber:
-       :hidden:
-       :url:
-
-    This class is a child of GraspleExerciseDirective so it supports
-    all the same options as the base exercise node
-    """
-
-    name = "grasple-exercise-start"
-
-    def run(self):
-        # Initialise Gated Registry
-        if not hasattr(self.env, "sphinx_grasple_exercise_gated_registry"):
-            self.env.sphinx_exercise_gated_registry = {}
-        gated_registry = self.env.sphinx_exercise_gated_registry
-        docname = self.env.docname
-        if docname not in gated_registry:
-            gated_registry[docname] = {
-                "start": [],
-                "end": [],
-                "sequence": [],
-                "msg": [],
-                "type": "grasple-exercise",
-            }
-        gated_registry[self.env.docname]["start"].append(self.lineno)
-        gated_registry[self.env.docname]["sequence"].append("S")
-        gated_registry[self.env.docname]["msg"].append(
-            f"{self.name} at line: {self.lineno}"
-        )
-        # Run Parent Methods
-        return super().run()
-
-
-class GraspleExerciseEndDirective(SphinxDirective):
-    """
-    A simple gated directive to mark end of an exercise
-
-    .. exercise-end::
-    """
-
-    name = "grasple-exercise-end"
-
-    def run(self):
-        # Initialise Gated Registry
-        if not hasattr(self.env, "sphinx_grasple_exercise_gated_registry"):
-            self.env.sphinx_exercise_gated_registry = {}
-        gated_registry = self.env.sphinx_exercise_gated_registry
-        docname = self.env.docname
-        if docname not in gated_registry:
-            gated_registry[docname] = {
-                "start": [],
-                "end": [],
-                "sequence": [],
-                "msg": [],
-                "type": "grasple-exercise",
-            }
-        gated_registry[self.env.docname]["end"].append(self.lineno)
-        gated_registry[self.env.docname]["sequence"].append("E")
-        gated_registry[self.env.docname]["msg"].append(
-            f"{self.name} at line: {self.lineno}"
-        )
-        return [grasple_exercise_end_node()]

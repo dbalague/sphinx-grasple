@@ -23,3 +23,46 @@ div.grasple-exercise p.admonition-title {
 div.grasple-exercise p.admonition-title::before {
   content: "\f303";
 }
+
+/* Hide the image on screen */
+@media screen {
+  div.side-by-side.docutils.container img {
+    display: none;
+  }
+}
+
+/* Show the image when printing */
+@media print {
+  div.gasple.admonition .side-by-side.docutils.container img {
+    display: initial;
+  }
+  div.grasple.admonition details.dropdown {
+    display: none;
+  }
+  
+  div.grasple.admonition section iframe {
+    display: none;
+  }
+}
+
+/* Show the dropdown by default */
+div.grasple-exercise details.dropdown {
+  display: block;
+}
+
+.side-by-side {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.qr-code-container {
+  display: none;
+  flex-basis: 20%;
+  max-width: 20%;
+}
+
+.description-container {
+  flex-basis: 80%;
+  max-width: 80%;
+}
