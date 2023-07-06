@@ -148,17 +148,15 @@ class GraspleExerciseDirective(SphinxGraspleExerciseBaseDirective):
         side_by_side += qr_code_node
         
         # Add the description
+        description_container = nodes.container(classes=['description-container'])
+        description_paragraph = nodes.paragraph()
         if not description:
-            print("Error: You cannot insert a Grasple exercise without a description.")
-            raise Exception()
-
-        else:
-            description_container = nodes.container(classes=['description-container'])
-            description_paragraph = nodes.paragraph()
+            description_paragraph += nodes.Text("")
+        else: 
             self.state.nested_parse(StringList([description]), self.content_offset, description_paragraph)
-            description_container += description_paragraph
-            side_by_side += description_container
-            section += side_by_side
+        description_container += description_paragraph
+        side_by_side += description_container
+        section += side_by_side
 
         # Create the iframe HTML code
         iframe_html = f'<iframe src="{url}" width="{iframe_width}" height="{iframe_height}"></iframe>'
