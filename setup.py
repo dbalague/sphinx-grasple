@@ -32,7 +32,8 @@ extras = {
         "docutils>=0.15,<0.19",
         "texsoup",
         "matplotlib",
-        "pyqrcode"
+        "pyqrcode",
+        "pypng"
     ],
     "rtd": [
         "sphinx>=4,<6",
@@ -60,7 +61,7 @@ setup(
     long_description_content_type="text/markdown",
     license="BSD",
     packages=find_packages(),
-    install_requires=["sphinx>=4", "sphinx-book-theme"],
+    install_requires=["sphinx>=4", "sphinx-book-theme", "pyqrcode", "pypng"],
     extras_require=extras,
     include_package_data=True,
     classifiers=[
