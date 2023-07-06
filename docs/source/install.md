@@ -10,7 +10,7 @@ You can also install directly from the repository to get the latest `development
 You can clone the repository:
 
 ```bash
-git clone https://github.com/executablebooks/sphinx-exercise
+git clone https://github.com/dbalague/sphinx-grasple
 ```
 
 then run:
